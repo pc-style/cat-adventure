@@ -1,0 +1,30 @@
+# Keep generated and vendored artifacts out of the agent context window.
+# Trim this file once your stack is chosen if some paths do not apply.
+
+.git/
+node_modules/
+dist/
+build/
+out/
+target/
+.venv/
+venv/
+__pycache__/
+.next/
+.nuxt/
+.turbo/
+.parcel-cache/
+.svelte-kit/
+coverage/
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.gradle/
+vendor/
+deps/
+_build/
+.firecrawl/
+*.min.js
+*.min.css
+*.map

@@ -1,0 +1,119 @@
+# --- OS ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Editors & IDEs ---
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# --- Secrets & local env ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Dependencies (common across ecosystems) ---
+node_modules/
+bower_components/
+vendor/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+*.egg
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+.tox/
+.nox/
+
+# --- Node / frontend ---
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.turbo/
+.parcel-cache/
+.svelte-kit/
+coverage/
+*.tsbuildinfo
+
+# --- Rust ---
+target/
+**/*.rs.bk
+
+# --- Go ---
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# --- Java / Kotlin / Scala ---
+*.class
+*.jar
+*.war
+.gradle/
+build/
+
+# --- Ruby ---
+.bundle/
+*.gem
+
+# --- Elixir / Erlang ---
+_build/
+deps/
+*.ez
+
+# --- .NET ---
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# --- Misc build & cache ---
+.cache/
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+
+# --- Firecrawl / agent scratch (local research) ---
+.firecrawl/
