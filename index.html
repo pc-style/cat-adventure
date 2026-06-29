@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A cozy platformer card adventure about collecting clues for a heartfelt gift." />
+    <title>Cat Adventure: The Present Trail</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">A playable love-note quest</p>
+        <h1>Cat Adventure: The Present Trail</h1>
+        <p>Guide a tiny cat through cozy chapters, collect story cards, talk to gentle friends, and unlock the final real-world gift reveal.</p>
+        <div class="actions"><button id="start">Start quest</button><button class="ghost" id="reset">Reset</button></div>
+      </section>
+      <section class="game-panel">
+        <div class="hud"><strong id="chapter"></strong><span id="goal"></span></div>
+        <canvas id="game" width="980" height="600" tabindex="0" aria-label="Playable platformer canvas"></canvas>
+        <div class="message" id="message"></div>
+      </section>
+      <aside class="cards"><h2>Adventure cards</h2><div id="cards"></div><p class="hint">Customize the final real-world instruction in the moon chapter text when you know where the present will be hidden.</p></aside>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
