@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Present Trail variation 1</title>
+    <style>
+      :root {
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        color: #40233e;
+        background: #fff1db;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 20% 10%, #ffd0de 0 14rem, transparent 15rem),
+          radial-gradient(circle at 80% 18%, #b7f4db 0 11rem, transparent 12rem),
+          linear-gradient(180deg, #ffe7bd, #fff8e8);
+      }
+      main {
+        width: min(1100px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2rem 0;
+      }
+      header {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 1rem;
+        align-items: end;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.5rem, 8vw, 6rem);
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+      }
+      p {
+        line-height: 1.6;
+      }
+      .panel {
+        border: 4px solid #40233e;
+        border-radius: 30px;
+        padding: 1rem;
+        background: rgb(255 255 255 / 0.64);
+        box-shadow: 12px 12px 0 #ff9dbb;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 22px;
+        background: #9bd8ff;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      button {
+        min-height: 54px;
+        border: 3px solid #40233e;
+        border-radius: 18px;
+        color: #40233e;
+        background: #fff;
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      #log {
+        min-height: 3rem;
+        margin: 1rem 0 0;
+        font-weight: 800;
+      }
+      @media (max-width: 760px) {
+        header,
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p><strong>Design 1</strong> Soft meadow postcard</p>
+          <h1>The Present Trail</h1>
+        </div>
+        <p>
+          A bright, cute platformer direction with chunky shapes, candy colors,
+          and story-card buttons that feel like stickers.
+        </p>
+      </header>
+      <section class="panel" aria-label="Playable mini concept">
+        <canvas id="game" width="960" height="540"></canvas>
+        <div class="cards">
+          <button type="button" data-card="hop">Petal hop</button>
+          <button type="button" data-card="dash">Ribbon dash</button>
+          <button type="button" data-card="bridge">Lantern bridge</button>
+          <button type="button" data-card="love">Love letter</button>
+        </div>
+        <p id="log">Use A/D or arrows, space to jump, and collect the ribbon heart.</p>
+      </section>
+    </main>
+    <script>
+      const canvas = document.querySelector("#game");
+      const ctx = canvas.getContext("2d");
+      const log = document.querySelector("#log");
+      const player = { x: 90, y: 410, w: 34, h: 48, vx: 0, vy: 0, grounded: false };
+      const keys = new Set();
+      let heart = { x: 760, y: 300, found: false };
+      let bridge = null;
+      const platforms = [
+        { x: 0, y: 490, w: 960, h: 80 },
+        { x: 260, y: 410, w: 160, h: 24 },
+        { x: 520, y: 350, w: 170, h: 24 },
+        { x: 720, y: 430, w: 150, h: 24 },
+      ];
+      function hit(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+      function card(name) {
+        if (name === "hop") player.vy = -620;
+        if (name === "dash") player.vx = 520;
+        if (name === "bridge") bridge = { x: player.x + 70, y: player.y + 60, w: 150, h: 18 };
+        if (name === "love") log.textContent = "The love letter turns the prickly bits into confetti.";
+      }
+      document.addEventListener("keydown", (event) => {
+        keys.add(event.key.toLowerCase());
+        if (event.key === " ") player.vy = -560;
+      });
+      document.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
+      document.querySelectorAll("[data-card]").forEach((button) => {
+        button.addEventListener("click", () => card(button.dataset.card));
+      });
+      function frame() {
+        player.vx += (keys.has("a") || keys.has("arrowleft") ? -1 : 0) * 1.2;
+        player.vx += (keys.has("d") || keys.has("arrowright") ? 1 : 0) * 1.2;
+        player.vx *= 0.9;
+        player.vy += 1.1;
+        player.x += player.vx;
+        player.y += player.vy;
+        player.grounded = false;
+        [...platforms, bridge].filter(Boolean).forEach((p) => {
+          if (hit(player, p) && player.vy > 0) {
+            player.y = p.y - player.h;
+            player.vy = 0;
+            player.grounded = true;
+          }
+        });
+        if (hit(player, { x: heart.x - 18, y: heart.y - 18, w: 36, h: 36 })) {
+          heart.found = true;
+          log.textContent = "Keepsake found. The real present is one trail closer.";
+        }
+        ctx.clearRect(0, 0, 960, 540);
+        const sky = ctx.createLinearGradient(0, 0, 0, 540);
+        sky.addColorStop(0, "#9bd8ff");
+        sky.addColorStop(1, "#fff0c6");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 960, 540);
+        ctx.fillStyle = "#8ed99f";
+        ctx.beginPath();
+        ctx.ellipse(160, 490, 240, 90, 0, Math.PI, Math.PI * 2);
+        ctx.ellipse(520, 500, 310, 120, 0, Math.PI, Math.PI * 2);
+        ctx.ellipse(860, 490, 260, 90, 0, Math.PI, Math.PI * 2);
+        ctx.fill();
+        [...platforms, bridge].filter(Boolean).forEach((p) => {
+          ctx.fillStyle = p === bridge ? "#ffd66e" : "#55a56f";
+          ctx.fillRect(p.x, p.y, p.w, p.h);
+        });
+        if (!heart.found) {
+          ctx.fillStyle = "#ff5c98";
+          ctx.beginPath();
+          ctx.arc(heart.x - 8, heart.y, 12, 0, Math.PI * 2);
+          ctx.arc(heart.x + 8, heart.y, 12, 0, Math.PI * 2);
+          ctx.lineTo(heart.x, heart.y + 26);
+          ctx.fill();
+        }
+        ctx.fillStyle = "#fff1f7";
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+        ctx.fillStyle = "#40233e";
+        ctx.fillRect(player.x + 21, player.y + 16, 5, 5);
+        requestAnimationFrame(frame);
+      }
+      frame();
+    </script>
+  </body>
+</html>

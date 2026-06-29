@@ -1,0 +1,343 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --bg: #160f26;
+  --bg-soft: #231638;
+  --panel: rgb(255 246 232 / 0.11);
+  --panel-strong: rgb(255 246 232 / 0.18);
+  --text: #fff7ec;
+  --muted: #d8c9ec;
+  --rose: #ff8fb3;
+  --gold: #ffd479;
+  --mint: #91e7c4;
+  --blue: #85c8ff;
+  --shadow: 0 24px 80px rgb(0 0 0 / 0.36);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 12%, rgb(255 143 179 / 0.22), transparent 28rem),
+    radial-gradient(circle at 84% 8%, rgb(133 200 255 / 0.18), transparent 24rem),
+    linear-gradient(160deg, #160f26 0%, #2b1743 52%, #3a2347 100%);
+}
+
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  color: var(--text);
+  background: var(--panel-strong);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus-visible {
+  background: rgb(255 255 255 / 0.23);
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.site-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.25rem 0 0.75rem;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: flex-end;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2rem, 5vw, 4.2rem);
+  letter-spacing: -0.07em;
+}
+
+.eyebrow {
+  margin-bottom: 0.35rem;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+main {
+  display: grid;
+  place-items: center;
+  padding: 0 1rem 2rem;
+}
+
+.game-shell {
+  width: min(1180px, 100%);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 36px;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.04)),
+    var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.game-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(18rem, 1fr);
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.game-copy h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.6rem, 3vw, 3rem);
+}
+
+.game-copy p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hud article {
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 22px;
+  padding: 0.8rem;
+  background: rgb(10 7 21 / 0.35);
+}
+
+.hud span,
+.hud strong {
+  display: block;
+}
+
+.hud span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.hud strong {
+  margin-top: 0.2rem;
+}
+
+.canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 28px;
+  background: #0c0920;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  max-height: min(70vh, 680px);
+  aspect-ratio: 16 / 9;
+}
+
+.card-bar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.card {
+  display: grid;
+  min-height: 7rem;
+  border-radius: 24px;
+  padding: 0.8rem;
+  text-align: left;
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.07)),
+    rgb(255 255 255 / 0.08);
+}
+
+.card[disabled] {
+  cursor: not-allowed;
+  filter: grayscale(0.75);
+  opacity: 0.46;
+}
+
+.card span {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  color: #2b1743;
+  background: var(--gold);
+}
+
+.card strong {
+  margin-top: 0.6rem;
+}
+
+.card small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.touch-controls {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.touch-controls div {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.touch-controls button {
+  flex: 1;
+}
+
+dialog {
+  width: min(720px, calc(100% - 2rem));
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 30px;
+  padding: 0;
+  color: var(--text);
+  background: linear-gradient(145deg, #36204f, #1b112d);
+  box-shadow: var(--shadow);
+}
+
+dialog::backdrop {
+  background: rgb(7 5 14 / 0.72);
+  backdrop-filter: blur(8px);
+}
+
+dialog article {
+  padding: clamp(1.2rem, 4vw, 2rem);
+}
+
+.story-dialog h2,
+.journal-dialog h2 {
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+}
+
+#dialog-body,
+#journal-body,
+.journal-dialog li {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+#dialog-body p:last-child,
+#journal-body p:last-child {
+  margin-bottom: 0;
+}
+
+.journal-entry {
+  border-block-start: 1px solid rgb(255 255 255 / 0.14);
+  padding-block: 1rem;
+}
+
+.journal-entry:first-child {
+  border-block-start: 0;
+}
+
+.journal-entry h3 {
+  margin: 0 0 0.35rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .touch-controls {
+    display: grid;
+  }
+}
+
+@media (max-width: 820px) {
+  .site-header,
+  .game-copy {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    display: grid;
+  }
+
+  .site-header nav {
+    justify-content: start;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    width: min(100% - 1rem, 1180px);
+  }
+
+  .game-shell {
+    border-radius: 24px;
+    padding: 0.75rem;
+  }
+
+  .hud {
+    grid-template-columns: 1fr;
+  }
+
+  .touch-controls {
+    grid-template-columns: 1fr;
+  }
+}

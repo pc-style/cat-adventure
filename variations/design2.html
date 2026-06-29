@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Present Trail variation 2</title>
+    <style>
+      :root {
+        font-family: "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+        color: #f8f0ff;
+        background: #10091d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgb(255 119 196 / 0.12) 1px, transparent 1px),
+          linear-gradient(rgb(120 179 255 / 0.11) 1px, transparent 1px),
+          radial-gradient(circle at 75% 8%, #4936a3, transparent 22rem),
+          #10091d;
+        background-size: 44px 44px, 44px 44px, auto, auto;
+      }
+      main {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2rem 0;
+      }
+      header {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+      h1 {
+        margin: 0;
+        color: #ff77c4;
+        font-size: clamp(2.2rem, 7vw, 5.5rem);
+        letter-spacing: -0.05em;
+        text-shadow: 0 0 24px #ff77c4;
+      }
+      p {
+        color: #cbbdf4;
+        line-height: 1.6;
+      }
+      .machine {
+        border: 1px solid rgb(255 255 255 / 0.2);
+        border-radius: 28px;
+        padding: 1rem;
+        background: linear-gradient(145deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03));
+        box-shadow: 0 0 60px rgb(133 200 255 / 0.18);
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 20px;
+        background: #121739;
+      }
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      button {
+        flex: 1 1 11rem;
+        min-height: 58px;
+        border: 1px solid rgb(255 255 255 / 0.24);
+        border-radius: 999px;
+        color: #10091d;
+        background: linear-gradient(135deg, #85c8ff, #ff77c4);
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      #log {
+        margin-bottom: 0;
+        color: #ffdf8a;
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p>Design 2. Moonlit arcade market</p>
+          <h1>Present quest</h1>
+        </div>
+        <p>Same game idea, but moodier. Neon cards, glowing stalls, and a night-market chapter feel.</p>
+      </header>
+      <section class="machine" aria-label="Playable mini concept">
+        <canvas id="game" width="960" height="540"></canvas>
+        <div class="cards">
+          <button type="button" data-card="hop">1. Moon hop</button>
+          <button type="button" data-card="dash">2. Comet dash</button>
+          <button type="button" data-card="bridge">3. Neon bridge</button>
+          <button type="button" data-card="love">4. Star letter</button>
+        </div>
+        <p id="log">Collect the glowing moon coin. Move with arrows or A/D. Jump with space.</p>
+      </section>
+    </main>
+    <script>
+      const canvas = document.querySelector("#game");
+      const ctx = canvas.getContext("2d");
+      const log = document.querySelector("#log");
+      const keys = new Set();
+      const player = { x: 100, y: 400, w: 32, h: 46, vx: 0, vy: 0 };
+      const coin = { x: 795, y: 275, found: false };
+      const sparks = [];
+      let bridge = null;
+      const platforms = [
+        { x: 0, y: 490, w: 960, h: 70 },
+        { x: 220, y: 390, w: 160, h: 20 },
+        { x: 470, y: 330, w: 180, h: 20 },
+        { x: 735, y: 400, w: 160, h: 20 },
+      ];
+      function hit(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+      function useCard(card) {
+        if (card === "hop") player.vy = -620;
+        if (card === "dash") player.vx = 620;
+        if (card === "bridge") bridge = { x: player.x + 78, y: player.y + 58, w: 160, h: 18 };
+        if (card === "love") {
+          log.textContent = "The star letter opens the final stall.";
+          sparks.push({ x: player.x + 20, y: player.y, life: 60 });
+        }
+      }
+      document.addEventListener("keydown", (event) => {
+        keys.add(event.key.toLowerCase());
+        if (event.key === " ") player.vy = -560;
+        if (["1", "2", "3", "4"].includes(event.key)) {
+          useCard(["hop", "dash", "bridge", "love"][Number(event.key) - 1]);
+        }
+      });
+      document.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
+      document.querySelectorAll("[data-card]").forEach((button) => {
+        button.addEventListener("click", () => useCard(button.dataset.card));
+      });
+      function frame() {
+        player.vx += (keys.has("a") || keys.has("arrowleft") ? -1.4 : 0) + (keys.has("d") || keys.has("arrowright") ? 1.4 : 0);
+        player.vx *= 0.9;
+        player.vy += 1.15;
+        player.x += player.vx;
+        player.y += player.vy;
+        [...platforms, bridge].filter(Boolean).forEach((platform) => {
+          if (hit(player, platform) && player.vy >= 0) {
+            player.y = platform.y - player.h;
+            player.vy = 0;
+          }
+        });
+        if (!coin.found && hit(player, { x: coin.x - 20, y: coin.y - 20, w: 40, h: 40 })) {
+          coin.found = true;
+          log.textContent = "Moon coin found. The market gate opens with a tiny chime.";
+        }
+        ctx.clearRect(0, 0, 960, 540);
+        const sky = ctx.createLinearGradient(0, 0, 0, 540);
+        sky.addColorStop(0, "#101032");
+        sky.addColorStop(1, "#37174d");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 960, 540);
+        ctx.fillStyle = "#ffe681";
+        ctx.beginPath();
+        ctx.arc(820, 85, 38, 0, Math.PI * 2);
+        ctx.fill();
+        platforms.concat(bridge ? [bridge] : []).forEach((platform) => {
+          ctx.fillStyle = platform === bridge ? "#ff77c4" : "#372b78";
+          ctx.shadowColor = platform === bridge ? "#ff77c4" : "#85c8ff";
+          ctx.shadowBlur = 18;
+          ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+          ctx.shadowBlur = 0;
+        });
+        if (!coin.found) {
+          ctx.fillStyle = "#ffdf8a";
+          ctx.shadowColor = "#ffdf8a";
+          ctx.shadowBlur = 24;
+          ctx.beginPath();
+          ctx.arc(coin.x, coin.y, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+        sparks.forEach((spark) => {
+          spark.life -= 1;
+          ctx.fillStyle = `rgb(255 119 196 / ${spark.life / 60})`;
+          ctx.fillRect(spark.x, spark.y, 34, 34);
+        });
+        ctx.fillStyle = "#f8f0ff";
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+        ctx.fillStyle = "#ff77c4";
+        ctx.fillRect(player.x + 8, player.y - 8, 18, 8);
+        requestAnimationFrame(frame);
+      }
+      frame();
+    </script>
+  </body>
+</html>

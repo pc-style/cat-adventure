@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Present Trail variation 3</title>
+    <style>
+      :root {
+        font-family: Georgia, "Times New Roman", serif;
+        color: #2f241f;
+        background: #efe1c7;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          linear-gradient(90deg, rgb(80 50 30 / 0.05) 1px, transparent 1px),
+          linear-gradient(rgb(80 50 30 / 0.05) 1px, transparent 1px),
+          #efe1c7;
+        background-size: 26px 26px;
+      }
+      main {
+        width: min(1080px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2rem 0;
+      }
+      header {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 1rem;
+        align-items: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 7vw, 5.6rem);
+        line-height: 0.95;
+      }
+      p {
+        line-height: 1.7;
+      }
+      .book {
+        position: relative;
+        border: 2px solid #5d4536;
+        border-radius: 18px;
+        padding: 1rem;
+        background: #fff8e9;
+        box-shadow: 0 18px 0 #c9a56e;
+      }
+      .book::before {
+        position: absolute;
+        inset: 0 50% 0 auto;
+        width: 2px;
+        background: rgb(93 69 54 / 0.25);
+        content: "";
+      }
+      canvas {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 2px solid #5d4536;
+        border-radius: 14px;
+        background: #f4d8a9;
+      }
+      .cards {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      button {
+        min-height: 58px;
+        border: 2px solid #5d4536;
+        border-radius: 10px;
+        color: #2f241f;
+        background: #f8d489;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #log {
+        position: relative;
+        z-index: 1;
+        min-height: 3rem;
+        margin-bottom: 0;
+        font-weight: 700;
+      }
+      @media (max-width: 780px) {
+        header,
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>The present trail</h1>
+        <p>
+          <strong>Design 3.</strong> A paper storybook direction with inked platforms,
+          cut-out characters, and card spells that read like pages from a fairy tale.
+        </p>
+      </header>
+      <section class="book" aria-label="Playable mini concept">
+        <canvas id="game" width="960" height="540"></canvas>
+        <div class="cards">
+          <button type="button" data-card="hop">Petal hop</button>
+          <button type="button" data-card="dash">Ribbon dash</button>
+          <button type="button" data-card="bridge">Lantern bridge</button>
+          <button type="button" data-card="love">Love letter</button>
+        </div>
+        <p id="log">The bookmark heart waits near the last shelf. A/D moves, space jumps.</p>
+      </section>
+    </main>
+    <script>
+      const canvas = document.querySelector("#game");
+      const ctx = canvas.getContext("2d");
+      const log = document.querySelector("#log");
+      const keys = new Set();
+      const player = { x: 80, y: 400, w: 34, h: 50, vx: 0, vy: 0 };
+      const keepsake = { x: 775, y: 250, found: false };
+      const crumbs = [];
+      let bridge = null;
+      const platforms = [
+        { x: 0, y: 490, w: 960, h: 70 },
+        { x: 210, y: 405, w: 175, h: 22 },
+        { x: 455, y: 335, w: 190, h: 22 },
+        { x: 735, y: 385, w: 165, h: 22 },
+      ];
+      function hit(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+      function useCard(card) {
+        if (card === "hop") player.vy = -610;
+        if (card === "dash") player.vx = 560;
+        if (card === "bridge") bridge = { x: player.x + 80, y: player.y + 62, w: 150, h: 18 };
+        if (card === "love") {
+          log.textContent = "The love letter becomes a bookmark with a secret clue.";
+          crumbs.push({ x: player.x + 8, y: player.y + 4, life: 70 });
+        }
+      }
+      document.addEventListener("keydown", (event) => {
+        keys.add(event.key.toLowerCase());
+        if (event.key === " ") player.vy = -545;
+      });
+      document.addEventListener("keyup", (event) => keys.delete(event.key.toLowerCase()));
+      document.querySelectorAll("[data-card]").forEach((button) => {
+        button.addEventListener("click", () => useCard(button.dataset.card));
+      });
+      function drawPaperRect(x, y, w, h, fill) {
+        ctx.fillStyle = fill;
+        ctx.strokeStyle = "#5d4536";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x + 6, y);
+        ctx.lineTo(x + w - 4, y + 3);
+        ctx.lineTo(x + w, y + h - 6);
+        ctx.lineTo(x + 4, y + h);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      function frame() {
+        player.vx += (keys.has("a") || keys.has("arrowleft") ? -1.1 : 0) + (keys.has("d") || keys.has("arrowright") ? 1.1 : 0);
+        player.vx *= 0.9;
+        player.vy += 1.08;
+        player.x += player.vx;
+        player.y += player.vy;
+        [...platforms, bridge].filter(Boolean).forEach((platform) => {
+          if (hit(player, platform) && player.vy > 0) {
+            player.y = platform.y - player.h;
+            player.vy = 0;
+          }
+        });
+        if (!keepsake.found && hit(player, { x: keepsake.x - 18, y: keepsake.y - 18, w: 36, h: 36 })) {
+          keepsake.found = true;
+          log.textContent = "Bookmark heart found. Turn the page to the real present.";
+        }
+        ctx.clearRect(0, 0, 960, 540);
+        ctx.fillStyle = "#f4d8a9";
+        ctx.fillRect(0, 0, 960, 540);
+        ctx.fillStyle = "#e1b675";
+        ctx.beginPath();
+        ctx.moveTo(0, 420);
+        ctx.quadraticCurveTo(260, 335, 520, 420);
+        ctx.quadraticCurveTo(760, 500, 960, 400);
+        ctx.lineTo(960, 540);
+        ctx.lineTo(0, 540);
+        ctx.fill();
+        platforms.concat(bridge ? [bridge] : []).forEach((platform) => drawPaperRect(platform.x, platform.y, platform.w, platform.h, platform === bridge ? "#ffe39b" : "#b97d5f"));
+        if (!keepsake.found) {
+          ctx.fillStyle = "#d94e6f";
+          ctx.beginPath();
+          ctx.moveTo(keepsake.x, keepsake.y + 18);
+          ctx.bezierCurveTo(keepsake.x - 30, keepsake.y - 2, keepsake.x - 10, keepsake.y - 30, keepsake.x, keepsake.y - 10);
+          ctx.bezierCurveTo(keepsake.x + 10, keepsake.y - 30, keepsake.x + 30, keepsake.y - 2, keepsake.x, keepsake.y + 18);
+          ctx.fill();
+        }
+        crumbs.forEach((crumb) => {
+          crumb.life -= 1;
+          ctx.fillStyle = `rgb(217 78 111 / ${crumb.life / 70})`;
+          ctx.fillRect(crumb.x, crumb.y, 28, 28);
+        });
+        drawPaperRect(player.x, player.y, player.w, player.h, "#fff8e9");
+        ctx.fillStyle = "#2f241f";
+        ctx.fillRect(player.x + 21, player.y + 17, 4, 4);
+        requestAnimationFrame(frame);
+      }
+      frame();
+    </script>
+  </body>
+</html>

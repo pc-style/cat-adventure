@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#40235d">
+    <title>The Present Trail</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">A tiny adventure for someone loved</p>
+        <h1>The Present Trail</h1>
+      </div>
+      <nav aria-label="Game actions">
+        <button id="new-game-button" type="button">New game</button>
+        <button id="journal-button" type="button">Journal</button>
+        <button id="help-button" type="button">Help</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="game-shell" aria-labelledby="game-title">
+        <div class="game-copy">
+          <h2 id="game-title">Find the last ribbon</h2>
+          <p>
+            Run, jump, collect story cards, and use little spells to cross five handmade places.
+            The last gate reveals the real-life present clue.
+          </p>
+        </div>
+
+        <section class="hud" aria-label="Current game status">
+          <article>
+            <span>Chapter</span>
+            <strong id="chapter-label">1. Meadow post</strong>
+          </article>
+          <article>
+            <span>Hearts</span>
+            <strong id="hearts-label">5 / 5</strong>
+          </article>
+          <article>
+            <span>Sparks</span>
+            <strong id="spark-label">0</strong>
+          </article>
+          <article>
+            <span>Keepsakes</span>
+            <strong id="keepsake-label">0 / 0</strong>
+          </article>
+        </section>
+
+        <div class="canvas-wrap">
+          <canvas
+            id="game-canvas"
+            width="960"
+            height="540"
+            aria-describedby="canvas-description"
+          ></canvas>
+          <section id="canvas-description" class="sr-only">
+            A side-scrolling platform game. Move with the arrow keys or A and D. Jump with W, the up arrow,
+            or space. Use cards with number keys 1 through 5. On touch screens, use the controls below.
+          </section>
+        </div>
+
+        <section class="card-bar" aria-label="Cards in hand">
+          <button class="card" id="card-petal" type="button" data-card="petal">
+            <span>1</span>
+            <strong>Petal hop</strong>
+            <small>A soft extra jump.</small>
+          </button>
+          <button class="card" id="card-ribbon" type="button" data-card="ribbon">
+            <span>2</span>
+            <strong>Ribbon dash</strong>
+            <small>A quick burst forward.</small>
+          </button>
+          <button class="card" id="card-lantern" type="button" data-card="lantern">
+            <span>3</span>
+            <strong>Lantern bridge</strong>
+            <small>Places a short magic step.</small>
+          </button>
+          <button class="card" id="card-letter" type="button" data-card="letter">
+            <span>4</span>
+            <strong>Love letter</strong>
+            <small>Charms grumpy thorns.</small>
+          </button>
+          <button class="card" id="card-cocoa" type="button" data-card="cocoa">
+            <span>5</span>
+            <strong>Cocoa heart</strong>
+            <small>Spend sparks to heal.</small>
+          </button>
+        </section>
+
+        <section class="touch-controls" aria-label="Touch controls">
+          <div>
+            <button type="button" data-touch="left">Left</button>
+            <button type="button" data-touch="right">Right</button>
+          </div>
+          <div>
+            <button type="button" data-touch="jump">Jump</button>
+            <button type="button" data-touch="card">Card</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="story-dialog" class="story-dialog">
+      <article>
+        <p class="eyebrow" id="dialog-kicker">The letter opens</p>
+        <h2 id="dialog-title">A ribbon waits by the window</h2>
+        <div id="dialog-body"></div>
+        <form method="dialog">
+          <button id="dialog-next-button" type="submit">Continue</button>
+        </form>
+      </article>
+    </dialog>
+
+    <dialog id="journal-dialog" class="journal-dialog">
+      <article>
+        <h2>Journey journal</h2>
+        <div id="journal-body"></div>
+        <form method="dialog">
+          <button type="submit">Close journal</button>
+        </form>
+      </article>
+    </dialog>
+
+    <dialog id="help-dialog" class="journal-dialog">
+      <article>
+        <h2>How to play</h2>
+        <ul>
+          <li>Move with A/D or arrow keys.</li>
+          <li>Jump with W, up arrow, or space.</li>
+          <li>Use cards with 1 through 5, or tap a card.</li>
+          <li>Collect keepsakes to unlock each exit. Sparks power cards.</li>
+          <li>Reach the final picnic blanket to reveal the real present clue.</li>
+        </ul>
+        <form method="dialog">
+          <button type="submit">Back to the trail</button>
+        </form>
+      </article>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
