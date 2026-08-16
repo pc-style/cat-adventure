@@ -2,7 +2,7 @@ const cardInfo = {
   jump: { name: 'Ribbon Leap', short: 'Higher jump', color: '#ffd166' },
   dash: { name: 'Starlight Dash', short: 'Quick burst', color: '#8ecae6' },
   charm: { name: 'Sweet Charm', short: 'Talk to friends', color: '#ffafcc' },
-  shield: { name: 'Velvet Courage', short: 'Ignore one bump', color: '#cdb4db' },
+  shield: { name: 'Velvet Courage', short: 'Final quest card', color: '#cdb4db' },
 };
 
 const scenes = [
